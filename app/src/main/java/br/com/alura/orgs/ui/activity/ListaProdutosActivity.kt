@@ -2,10 +2,13 @@ package br.com.alura.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import br.com.alura.orgs.database.AppDataBase
 import br.com.alura.orgs.databinding.ActivityListaProdutosActivityBinding
 import br.com.alura.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
+
+private const val TAG = "ListaProdutosActivity"
 
 class ListaProdutosActivity : AppCompatActivity() {
 
@@ -42,6 +45,9 @@ class ListaProdutosActivity : AppCompatActivity() {
     }
 
     private fun configuraRecyclerView() {
+        val db = AppDataBase.instancia(this)
+        val produtoDao = db.produtoDao()
+
         val recyclerView = binding.activityListaProdutosRecyclerView
         recyclerView.adapter = adapter
         adapter.quandoClicaNoItem = {
@@ -49,9 +55,15 @@ class ListaProdutosActivity : AppCompatActivity() {
                 this,
                 DetalhesProdutoActivity::class.java
             ).apply {
-                putExtra(CHAVE_PRODUTO, it)
+                putExtra(CHAVE_PRODUTO_ID, it.id)
             }
             startActivity(intent)
+        }
+        adapter.quandoClicaEmEditar = {
+            Log.i(TAG, "configuraRecyclerView: Editar $it")
+        }
+        adapter.quandoClicaEmRemover = {
+            Log.i(TAG, "configuraRecyclerView: Remover $it")
         }
     }
 
